@@ -4,6 +4,7 @@ import com.pongolino.study.reactive.application.controller.dto.*;
 import com.pongolino.study.reactive.domain.entity.Movie;
 import com.pongolino.study.reactive.domain.service.MovieInfoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -20,7 +21,7 @@ public class MovieController {
         this.movieFacade = movieFacade;
     }
 
-    @GetMapping("/movie")
+    @GetMapping("/movies")
     public Flux<MovieShowResult> showAllMovieInfo() {
         return movieInfoService.listAll().map(result -> {
             MovieShowResult response = new MovieShowResult();
@@ -34,8 +35,8 @@ public class MovieController {
         });
     }
 
-    @GetMapping("/movie/{id}")
-    public Mono<MovieShowResult> findByMovieInfoId(@PathVariable("id") String id) {
+    @GetMapping("/movies/{id}")
+    public Mono<ResponseEntity<MovieShowResult>> findByMovieInfoId(@PathVariable("id") String id) {
         return movieInfoService.findById(id).map(result -> {
             MovieShowResult response = new MovieShowResult();
             response.setId(result.getMovieInfoId());
@@ -44,22 +45,26 @@ public class MovieController {
             response.setCast(result.getCast());
             response.setRelease_date(result.getRelease_date());
 
-            return response;
-        });
+            return ResponseEntity.ok(response);
+        }).switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
-    @PutMapping("/movie/{id}")
-    public Mono<MovieUpdateResult> updateMovie(@RequestBody MovieUpdate movieUpdate, @PathVariable("id") String id) {
-        return movieFacade.updateMovieInfo(movieUpdate, id);
+    @PutMapping("/movies/{id}")
+    public Mono<ResponseEntity<MovieUpdateResult>> updateMovie(@RequestBody MovieUpdate movieUpdate, @PathVariable("id") String id) {
+        return movieFacade.updateMovieInfo(movieUpdate, id)
+                .map(ResponseEntity::ok)
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
-    @DeleteMapping("/movie/{id}")
+    @DeleteMapping("/movies/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteMovie(@RequestParam("id") String id) {
-        return movieInfoService.deleteById(id);
+    public Mono<ResponseEntity<Object>> deleteMovie(@RequestParam("id") String id) {
+        return movieInfoService.deleteById(id)
+                .map(result -> ResponseEntity.noContent().build())
+                .switchIfEmpty(Mono.just(ResponseEntity.notFound().build()));
     }
 
-    @PostMapping("/movie")
+    @PostMapping("/movies")
     @ResponseStatus(HttpStatus.CREATED)
     public Mono<MovieCreationResponse> addMovieInfo(@RequestBody MovieCreationRequest request) {
         Movie movie = new Movie(null, request.getName(), request.getYear(), request.getCast(), request.getRelease_date());
