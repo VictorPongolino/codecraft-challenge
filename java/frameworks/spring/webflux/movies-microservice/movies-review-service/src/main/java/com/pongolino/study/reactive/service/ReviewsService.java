@@ -5,6 +5,8 @@ import com.pongolino.study.reactive.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -16,5 +18,9 @@ public class ReviewsService {
     @Transactional(readOnly = false)
     public Mono<Review> save(Review review) {
         return reviewRepository.save(review);
+    }
+
+    public Flux<Review> findAll() {
+        return reviewRepository.findAll();
     }
 }
