@@ -18,7 +18,10 @@ public class ReviewRoutes {
                 .nest(path("/1/reviews"), builder -> {
                     builder
                             .POST("", handler::createReview)
-                            .GET("", handler::getAllReviews);
+                            .GET("", handler::getAllReviews)
+                            .PUT("/{id}", handler::updateReview)
+
+                    ;
                 })
                 .build();
     }

@@ -54,6 +54,24 @@ public class ReviewHandler {
     }
 
 
-
+    public Mono<ServerResponse> updateReview(ServerRequest request) {
+        return reviewsService.findById(request.pathVariable("id")).flatMap(data -> {
+            return request.bodyToMono(ReviewUpdateRequest.class).flatMap(body -> {
+                data.setComment(body.getComment());
+                data.setMovieInfoId(body.getMovieInfoId());
+                data.setRating(body.getRating());
+                return reviewsService.save(data);
+            }).flatMap(updatedData -> {
+                UpdateReviewResponse updateReviewResponse = UpdateReviewResponse.builder()
+                        .withReviewId(updatedData.getReviewId())
+                        .withMovieInfoId(updatedData.getMovieInfoId())
+                        .withComment(updatedData.getComment())
+                        .withRating(updatedData.getRating())
+                        .build();
+                return Mono.just(updateReviewResponse);
+            })
+            .flatMap(responseData -> ServerResponse.ok().body(responseData, UpdateReviewResponse.class));
+        }).switchIfEmpty(ServerResponse.notFound().build());
+    }
 }
 
