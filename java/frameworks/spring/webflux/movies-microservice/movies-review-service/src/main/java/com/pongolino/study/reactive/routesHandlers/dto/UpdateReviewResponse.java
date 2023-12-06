@@ -1,4 +1,4 @@
-package com.pongolino.study.reactive.routesHandlers;
+package com.pongolino.study.reactive.routesHandlers.dto;
 
 import lombok.Builder;
 
