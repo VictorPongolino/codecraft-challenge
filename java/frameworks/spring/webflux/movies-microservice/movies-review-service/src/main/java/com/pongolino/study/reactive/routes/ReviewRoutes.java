@@ -20,6 +20,7 @@ public class ReviewRoutes {
                             .POST("", handler::createReview)
                             .GET("", handler::getAllReviews)
                             .PUT("/{id}", handler::updateReview)
+                            .DELETE("/{id}", handler::deleteReview)
 
                     ;
                 })

@@ -1,9 +1,7 @@
 package com.pongolino.study.reactive.routesHandlers;
 
 import com.pongolino.study.reactive.domain.Review;
-import com.pongolino.study.reactive.routesHandlers.dto.ReviewAddRequest;
-import com.pongolino.study.reactive.routesHandlers.dto.ReviewCreationResponse;
-import com.pongolino.study.reactive.routesHandlers.dto.ReviewResponse;
+import com.pongolino.study.reactive.routesHandlers.dto.*;
 import com.pongolino.study.reactive.service.ReviewsService;
 import lombok.*;
 import org.springframework.stereotype.Component;
@@ -72,6 +70,13 @@ public class ReviewHandler {
             })
             .flatMap(responseData -> ServerResponse.ok().body(responseData, UpdateReviewResponse.class));
         }).switchIfEmpty(ServerResponse.notFound().build());
+    }
+
+    public Mono<ServerResponse> deleteReview(ServerRequest serverRequest) {
+        String id = serverRequest.pathVariable("id");
+
+        return reviewsService.deleteById(id)
+                .then(ServerResponse.noContent().build());
     }
 }
 

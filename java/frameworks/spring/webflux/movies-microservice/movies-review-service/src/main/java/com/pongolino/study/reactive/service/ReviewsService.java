@@ -26,4 +26,9 @@ public class ReviewsService {
     public Mono<Review> findById(String id) {
         return reviewRepository.findById(id);
     }
+
+    @Transactional(readOnly = false)
+    public Mono<Void> deleteById(String id) {
+        return reviewRepository.deleteById(id);
+    }
 }
