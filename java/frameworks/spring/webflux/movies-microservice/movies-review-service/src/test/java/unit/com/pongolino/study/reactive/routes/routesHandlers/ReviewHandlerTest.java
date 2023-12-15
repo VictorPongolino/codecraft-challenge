@@ -1,6 +1,7 @@
-package com.pongolino.study.reactive.routesHandlers;
+package com.pongolino.study.reactive.routes.routesHandlers;
 
 import com.pongolino.study.reactive.domain.Review;
+import com.pongolino.study.reactive.routesHandlers.ReviewHandler;
 import com.pongolino.study.reactive.routesHandlers.dto.ReviewAddRequest;
 import com.pongolino.study.reactive.routesHandlers.dto.ReviewCreationResponse;
 import com.pongolino.study.reactive.service.ReviewsService;
@@ -23,6 +24,8 @@ import static org.mockito.Mockito.when;
 @AutoConfigureWebTestClient
 class ReviewHandlerTest {
 
+    private final String REVIEWS_ENDPOINT = "/1/reviews";
+
     @Autowired
     private WebTestClient webTestClient;
 
@@ -41,6 +44,7 @@ class ReviewHandlerTest {
 
         webTestClient
             .post()
+                .uri(REVIEWS_ENDPOINT)
                 .body(request, ReviewAddRequest.class)
             .exchange()
             .expectStatus()
