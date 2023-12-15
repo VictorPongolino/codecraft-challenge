@@ -38,17 +38,21 @@ public class ReviewHandler {
     }
 
     public Mono<ServerResponse> getAllReviews(ServerRequest serverRequest) {
-        Mono<List<ReviewResponse>> serverResponseFlux = reviewsService.findAll().flatMap(response -> {
-            ReviewResponse reviewResponse = ReviewResponse.builder()
-                    .withReviewId(response.getReviewId())
-                    .withMovieInfoId(response.getMovieInfoId())
-                    .withComment(response.getComment())
-                    .withRating(response.getRating())
-                    .build();
-            return Mono.just(reviewResponse);
-        }).collectList();
+        Mono<List<ReviewResponse>> serverResponseFlux = serverRequest.queryParam("movieInfoId")
+                .map(data -> reviewsService.findByMovieInfoId(data).flatMap(this::convertReviewsToVO).collectList())
+                .orElseGet(() -> reviewsService.findAll().flatMap(this::convertReviewsToVO).collectList());
 
         return serverResponseFlux.flatMap(result -> ServerResponse.ok().body(result, ReviewResponse.class));
+    }
+
+    private Mono<ReviewResponse> convertReviewsToVO(Review response) {
+        ReviewResponse reviewResponse = ReviewResponse.builder()
+                .withReviewId(response.getReviewId())
+                .withMovieInfoId(response.getMovieInfoId())
+                .withComment(response.getComment())
+                .withRating(response.getRating())
+                .build();
+        return Mono.just(reviewResponse);
     }
 
 

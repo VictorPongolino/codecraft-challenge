@@ -26,6 +26,9 @@ public class ReviewsService {
     public Mono<Review> findById(String id) {
         return reviewRepository.findById(id);
     }
+    public Flux<Review> findByMovieInfoId(String movieInfoId) {
+        return reviewRepository.findByMovieInfoId(movieInfoId);
+    }
 
     @Transactional(readOnly = false)
     public Mono<Void> deleteById(String id) {
