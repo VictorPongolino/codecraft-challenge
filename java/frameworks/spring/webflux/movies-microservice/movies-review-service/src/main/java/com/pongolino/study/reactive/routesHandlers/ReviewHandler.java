@@ -9,17 +9,28 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.util.List;
+import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
 public class ReviewHandler {
 
     private final ReviewsService reviewsService;
+    private final Validator validator;
 
 
     public Mono<ServerResponse> createReview(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(ReviewAddRequest.class)
+            .doOnNext(request -> {
+                Set<ConstraintViolation<ReviewAddRequest>> errors = validator.validate(request);
+                if (errors.size() > 0) {
+                    throw new ConstraintViolationException(errors);
+                }
+            })
             .flatMap(request -> {
                 Review review = new Review();
                 review.setComment(request.getComment());
