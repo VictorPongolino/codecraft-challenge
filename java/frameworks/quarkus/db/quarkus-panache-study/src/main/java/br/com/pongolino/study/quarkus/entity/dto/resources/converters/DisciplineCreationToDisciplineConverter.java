@@ -4,7 +4,6 @@ import br.com.pongolino.study.quarkus.entity.Discipline;
 import br.com.pongolino.study.quarkus.entity.dto.resources.DisciplineCreationRequest;
 import br.com.pongolino.study.quarkus.service.StudentService;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ public class DisciplineCreationToDisciplineConverter {
 
     private final StudentService studentService;
 
-    @Inject
     public DisciplineCreationToDisciplineConverter(StudentService studentService) {
         this.studentService = studentService;
     }
