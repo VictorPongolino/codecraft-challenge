@@ -8,13 +8,8 @@ import jakarta.transaction.Transactional;
 
 @ApplicationScoped
 public class DisciplineService {
-
-    private final DisciplineRepository disciplineRepository;
-
     @Inject
-    public DisciplineService(DisciplineRepository disciplineRepository) {
-        this.disciplineRepository = disciplineRepository;
-    }
+    private DisciplineRepository disciplineRepository;
 
     @Transactional
     public void save(Discipline discipline) {

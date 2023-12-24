@@ -11,12 +11,8 @@ import java.util.Set;
 
 @ApplicationScoped
 public class StudentService {
-    private final StudentRepository studentRepository;
-
     @Inject
-    public StudentService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
+    private StudentRepository studentRepository;
 
     public List<Student> findById(Set<Long> ids) {
         return studentRepository.find("id", Sort.by("id", Sort.Direction.Ascending), ids).list();
