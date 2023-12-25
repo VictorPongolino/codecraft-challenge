@@ -1,0 +1,12 @@
+quarkus.datasource.jdbc.url=jdbc:mysql://localhost:3306/quarkus_student
+quarkus.datasource.username=
+quarkus.datasource.password=
+quarkus.hibernate-orm.database.generation=update
+quarkus.datasource.db-kind=mysql
+
+%dev.quarkus.hibernate-orm.sql-load-script=import.sql
+%dev.quarkus.hibernate-orm.database.generation.create-schemas=true
+%dev.quarkus.hibernate-orm.database.generation=drop-and-create
+%dev.quarkus.hibernate-orm.scripts.generation=drop-and-create
+%dev.quarkus.hibernate-orm.scripts.generation.create-target=create.sql
+%dev.quarkus.hibernate-orm.scripts.generation.drop-target=drop.sql
