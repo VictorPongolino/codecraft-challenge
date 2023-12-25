@@ -1,6 +1,7 @@
 package com.pongolino.study.reactive.routesHandlers;
 
 import com.pongolino.study.reactive.domain.Review;
+import com.pongolino.study.reactive.exceptions.NotFoundException;
 import com.pongolino.study.reactive.routesHandlers.dto.*;
 import com.pongolino.study.reactive.service.ReviewsService;
 import lombok.*;
@@ -50,7 +51,10 @@ public class ReviewHandler {
 
     public Mono<ServerResponse> getAllReviews(ServerRequest serverRequest) {
         Mono<List<ReviewResponse>> serverResponseFlux = serverRequest.queryParam("movieInfoId")
-                .map(data -> reviewsService.findByMovieInfoId(data).flatMap(this::convertReviewsToVO).collectList())
+                .map(data -> {
+                    return reviewsService.findByMovieInfoId(data).flatMap(this::convertReviewsToVO).collectList()
+                            .switchIfEmpty(Mono.error(new NotFoundException(String.format("Not found '%s' for reviews", data))));
+                })
                 .orElseGet(() -> reviewsService.findAll().flatMap(this::convertReviewsToVO).collectList());
 
         return serverResponseFlux.flatMap(result -> ServerResponse.ok().body(result, ReviewResponse.class));
@@ -68,7 +72,10 @@ public class ReviewHandler {
 
 
     public Mono<ServerResponse> updateReview(ServerRequest request) {
-        return reviewsService.findById(request.pathVariable("id")).flatMap(data -> {
+        String id = request.pathVariable("id");
+        return reviewsService.findById(id)
+        .switchIfEmpty(Mono.error(new NotFoundException(String.format("Not found review ('%s') to update!", id))))
+        .flatMap(data -> {
             return request.bodyToMono(ReviewUpdateRequest.class).flatMap(body -> {
                 data.setComment(body.getComment());
                 data.setMovieInfoId(body.getMovieInfoId());
@@ -91,6 +98,7 @@ public class ReviewHandler {
         String id = serverRequest.pathVariable("id");
 
         return reviewsService.deleteById(id)
+                .switchIfEmpty(Mono.error(new NotFoundException(String.format("Not found review ('%s') to delete!", id))))
                 .then(ServerResponse.noContent().build());
     }
 }

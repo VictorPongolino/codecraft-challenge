@@ -22,6 +22,9 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
             overrideBodyMessageWithBadRequestStatusCode(ex, response);
         }
 
+        if (ex instanceof NotFoundException) {
+            overrideBodyMessageWithBadRequestStatusCode(ex, response);
+        }
 
         return null;
     }
