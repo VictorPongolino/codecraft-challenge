@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "grade")
 public class Grade {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @OneToOne
     private Discipline discipline;

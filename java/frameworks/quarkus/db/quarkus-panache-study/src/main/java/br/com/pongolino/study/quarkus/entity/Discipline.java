@@ -9,7 +9,7 @@ import java.util.Set;
 @Entity
 @Table(name = "discipline")
 public class Discipline {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @ManyToMany

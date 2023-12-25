@@ -9,11 +9,11 @@ import java.util.Set;
 @Entity
 @Table(name = "student")
 public class Student {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private LocalDate enroll;
-    @ManyToMany
+    @ManyToMany(mappedBy = "students")
     private Set<Discipline> discipline = new HashSet<>();
     @OneToMany
     private Set<Grade> grade = new HashSet<>();
